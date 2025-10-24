@@ -3,8 +3,7 @@ name: Deploy Builds to GitHub Pages
 on:
   push:
     branches:
-      - main  # ou a branch que você usa
-
+      - main  # ou a branch que voce usa
 permissions:
   contents: read
   pages: write
@@ -24,7 +23,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # ⚙️ Pasta que será publicada
+      # Pasta que sera publicada
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
