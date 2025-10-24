@@ -1,11 +1,5 @@
 name: Deploy Builds to GitHub Pages
-
-on:
-  push:
-    branches:
-      - main          # branch que dispara o deploy
-    paths:
-      - 'Builds/**'   # só roda se algo dentro de Builds mudar
+  # só roda se algo dentro de Builds mudar
 
 permissions:
   contents: read
