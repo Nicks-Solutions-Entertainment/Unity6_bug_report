@@ -1,5 +1,9 @@
 name: Deploy Builds to GitHub Pages
-  # só roda se algo dentro de Builds mudar
+
+on:
+  push:
+    branches:
+      - main  # ou a branch que você usa
 
 permissions:
   contents: read
@@ -20,10 +24,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # ⚙️ Pasta que será publicada
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Builds  # caminho da pasta que será publicada
+          path: Builds  # <-- caminho da sua pasta de builds
 
       - name: Deploy to GitHub Pages
         id: deployment
