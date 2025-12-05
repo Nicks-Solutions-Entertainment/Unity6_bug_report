@@ -114,7 +114,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""6c2ab1b8-8984-453a-af3d-a3c78ae1679a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -322,6 +322,17 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""3e5f5442-8668-4b27-a940-df99bad7e831"",
                     ""path"": ""<Pen>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch;Joystick;Keyboard&Mouse;Gamepad;XR"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2373b09f-659f-454a-8a29-09a1fd486e54"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Touch;Joystick;Keyboard&Mouse;Gamepad;XR"",
