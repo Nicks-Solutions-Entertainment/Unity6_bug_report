@@ -73,7 +73,7 @@ public class PlayerControll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _imersiveUiMode = IsOnImersiveUI;
+        //_imersiveUiMode = IsOnImersiveUI;
         ManageMouseState(m_lockMouse && !_imersiveUiMode);
 
         ApplyHeadRotatrion();

@@ -138,20 +138,33 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
             ProcessCurrentHit(pData_pointer, ref _currentPointerHit);
             ManageClick(pData_pointer, uiInputModule.leftClick.action);
 
-
-
             ManageScroll(pData_pointer, uiInputModule.scrollWheel.action);
             ManageDrag(pData_pointer);
-
 
             _lastPointerHit = _currentPointerHit;
         }
         else
         {
+            // chamar pointer exit se existia um enter
+            //if (pData_pointer.pointerEnter != null)
+            //    OnPointerExit(pData_pointer);
 
+            // se estava arrastando, finalizar o drag mesmo sem raycast
+            // if was dragging, finalizes drag even without raycast
+            //if (pData_pointer.dragging)
+            //{
+            //    // finalize endDrag on pointerDrag
+            //    if (pData_pointer.pointerDrag != null)
+            //        ExecuteEvents.Execute(pData_pointer.pointerDrag, pData_pointer, ExecuteEvents.endDragHandler);
+
+            //    pData_pointer.dragging = false;
+            //    pData_pointer.pointerDrag = null;
+            //}
+
+            pData_pointer.pointerCurrentRaycast.Clear();
             _currentPointerHit.Clear();
             //if (pData_pointer.pointerPress == null)
-            pData_pointer = new PointerEventData(EventSystem.current);
+            //pData_pointer = new PointerEventData(EventSystem.current);
             _lastPointerHit = _currentPointerHit;
         }
 
@@ -195,7 +208,7 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     {
         if (currentHit.gameObject != lastHit.gameObject)
         {
-            pData.pointerEnter = lastHit.gameObject;
+            //pData.pointerEnter = lastHit.gameObject;
             OnPointerExit(pData);
             lastHit.Clear();
             pData.pointerEnter = currentHit.gameObject;
@@ -205,9 +218,10 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     void ProcessCurrentHit(PointerEventData pData, ref RaycastResult currentHit)
     {
         //RaycastResult currentHit = pData.pointerCurrentRaycast;
-
+        s_pointer = pData;
         if (currentHit.isValid)
         {
+
             //filling PData 
             {
                 pData.pointerCurrentRaycast = currentHit;
@@ -230,7 +244,7 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         if (currentHit.gameObject && inputAction.WasPressedThisFrame())
         {
             //filling PData 
-            ped.pointerPressRaycast = currentHit;
+            //ped.pointerPressRaycast = currentHit;
 
             //Debug.Log($"Cloick pressed");
             OnPointerDown(ped);
@@ -263,61 +277,126 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     {
         ExecuteEvents.Execute(ped.pointerEnter, ped, ExecuteEvents.pointerEnterHandler);
 
-        //UserScreen.Instance?.XR_PointerEnter(ped.pointerEnter, ped);
     }
 
     void OnPointerDown(PointerEventData ped)
     {
+        //ped.pointerClick = ped.pointerPress = null;
+        RaycastResult currentHit = ped.pointerCurrentRaycast;
+        GameObject _clickObj = currentHit.gameObject;
+        bool _clickObjIsSelectable = false;
 
-        ped.pointerPress = ped.pointerPressRaycast.gameObject;
-        ped.pointerClick = ped.pointerPressRaycast.gameObject;
+
+        if (_clickObj.TryGetComponentInParent(out Selectable _selectable))
+        {
+            _clickObj = _selectable.gameObject;
+            _clickObjIsSelectable = true;
+        }
+        else if (_clickObj.TryGetComponent(out _selectable))
+        {
+            _clickObj = _selectable.gameObject;
+            _clickObjIsSelectable = true;
+        }
+        else
+            _clickObj = ped.pointerCurrentRaycast.gameObject;
+
+        if (_clickObj != ped.pointerPressRaycast.gameObject && !_clickObjIsSelectable)
+            ped.pointerPress = ped.pointerClick = null;
+
+        //-
+        GameObject clickHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(_clickObj);
+        ped.pointerPress = clickHandler != null ? clickHandler : _clickObj;
+
+        ped.rawPointerPress = _clickObj;
+
+
+        GameObject beginDragHandler = ExecuteEvents.GetEventHandler<IBeginDragHandler>(_clickObj);
+        if (beginDragHandler != null)
+            ped.pointerDrag = beginDragHandler;
+
+        //
+
+        currentHit.gameObject = _clickObj;
+        ped.pointerPressRaycast = currentHit;
+
         ped.position = ped.pointerPressRaycast.screenPosition;
         ped.button = PointerEventData.InputButton.Left;
 
 
-        ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.pointerDownHandler);
+        ExecuteEvents.Execute(_clickObj, ped, ExecuteEvents.pointerDownHandler);
 
-        ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.initializePotentialDrag);
-        if (ped.pointerPress.TryGetComponent(out Selectable _))
+        ExecuteEvents.Execute(_clickObj, ped, ExecuteEvents.initializePotentialDrag);
+
+        if (_clickObjIsSelectable)
         {
-            Debug.Log($"Selected:{ped.pointerPress.name}", ped.pointerPress);
-            ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.selectHandler);
+            Debug.Log($"Selected:{_clickObj.name}", ped.pointerPress);
+            ExecuteEvents.Execute(_clickObj, ped, ExecuteEvents.selectHandler);
 
-            //EventSystem.current.SetSelectedGameObject(ped.pointerPress);
         }
-
-        //UserScreen.Instance?.XR_PointerDown(ped.pointerEnter, ped);
+        s_pointer = ped;
     }
+
+
+    void ManageDrag(PointerEventData ped)
+    {
+        //return;
+
+
+        if (!ped.pointerPressRaycast.isValid) return;
+        if (!ped.dragging)
+            pData_pointer.dragging = pData_pointer.delta.magnitude > 0;
+
+        if (ped.dragging && ped.pointerDrag == null)
+        {
+            //ped.pointerDrag = ped.pointerPressRaycast.gameObject;
+            //string parent = ped.pointerDrag.transform.parent?.name;
+
+            var dragHandler = ExecuteEvents.GetEventHandler<IBeginDragHandler>(ped.pointerPressRaycast.gameObject);
+            if (dragHandler == null)
+                dragHandler = ped.pointerPressRaycast.gameObject;
+
+            ped.pointerDrag = dragHandler;
+            ExecuteEvents.Execute(ped.pointerDrag, ped, ExecuteEvents.beginDragHandler);
+            //Debug.Log($"ManageDrag  on {ped.pointerDrag.name} (parent:{parent})", ped.pointerDrag);
+            //ExecuteEvents.Execute(ped.pointerDrag, ped, ExecuteEvents.beginDragHandler);
+        }
+        else if (ped.dragging)
+        {
+            ExecuteEvents.Execute(ped.pointerDrag, ped, ExecuteEvents.dragHandler);
+
+        }
+    }
+
 
     void OnPointerUp(PointerEventData ped)
     {
-
+        ped.pointerPress = ped.pointerClick = ped.pointerPressRaycast.gameObject;
+        s_pointer = ped;
 
         ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.pointerUpHandler);
-        if (ped.dragging)
-            ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.endDragHandler);
+        //ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.deselectHandler);
 
-        if (ped.pointerCurrentRaycast.gameObject == ped.pointerPress)
+        //if (ped.dragging)
+        ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.endDragHandler);
+
+        if (ped.pointerCurrentRaycast.gameObject == ped.pointerPress || ped.pointerCurrentRaycast.gameObject.transform.IsChildOf(ped.pointerPress.transform))
+        {
+            Debug.Log($"OnPointerUp ::{ped.pointerPress.name}",ped.pointerPress);
             ExecuteEvents.Execute(ped.pointerPress, ped, ExecuteEvents.pointerClickHandler);
+        }
+        //ped.dragging = false;
+        ped.pointerPressRaycast.Clear();
 
-        //UserScreen.Instance?.XR_PointerUp(ped.pointerEnter, ped);
-
-        ped.pointerPress = null;
-        ped.pointerClick = null;
-        ped.pointerDrag = null;
-        ped.dragging = false;
-        ped.position = default;
     }
 
     void OnPointerExit(PointerEventData ped)
     {
         ExecuteEvents.Execute(ped.pointerEnter, ped, ExecuteEvents.pointerExitHandler);
-
-        //UserScreen.Instance?.XR_PointerExit(ped.pointerEnter, ped);
     }
 
     bool TryGetRayCast(Vector2 screenPos, ref PointerEventData pData)
     {
+        Vector2 _lastPos = pData.position;
         //pData = new PointerEventData(EventSystem.current);
         pData.position = screenPos;
 
@@ -348,8 +427,9 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
                 {
                     pData.dragging = _delta.magnitude > 0;
                 }
-                pData.delta = _delta;
-                pData.position += pData.delta;
+                //pData.delta = _delta;
+                pData.delta = pData.position - _lastPos;
+                //pData.position += pData.delta;
 
                 pData.displayIndex = pointer.displayIndex.ReadValue();
             }
@@ -372,25 +452,6 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         //}
 
         return pData.pointerCurrentRaycast.gameObject != null;
-    }
-
-    void ManageDrag(PointerEventData ped)
-    {
-        if (!ped.dragging && ped.pointerPress)
-            pData_pointer.dragging = pData_pointer.delta.magnitude > 0;
-
-        if (ped.dragging && ped.pointerDrag == null)
-        {
-            ped.pointerDrag = ped.pointerPress;
-            string parent = ped.pointerDrag.transform.parent?.name;
-            Debug.Log($"ManageDrag  on {ped.pointerDrag.name} (parent:{parent})", ped.pointerDrag);
-            ExecuteEvents.Execute(ped.pointerDrag, ped, ExecuteEvents.beginDragHandler);
-        }
-        else if (ped.dragging)
-        {
-            ExecuteEvents.Execute(ped.pointerDrag, ped, ExecuteEvents.dragHandler);
-
-        }
     }
 
     bool GetDisplayPoinerFromInputControl(InputControl control, out Pointer pointer)
