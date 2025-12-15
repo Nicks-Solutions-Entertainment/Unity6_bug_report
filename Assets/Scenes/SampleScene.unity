@@ -1221,44 +1221,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
-  s_pointer:
-    pointerEnter: {fileID: 0}
-    m_PointerPress: {fileID: 0}
-    <lastPress>k__BackingField: {fileID: 0}
-    rawPointerPress: {fileID: 0}
-    pointerDrag: {fileID: 0}
-    pointerClick: {fileID: 0}
-    hovered: []
-    eligibleForClick: 0
-    displayIndex: 0
-    pointerId: 0
-    position: {x: 0, y: 0}
-    delta: {x: 0, y: 0}
-    pressPosition: {x: 0, y: 0}
-    clickTime: 0
-    clickCount: 0
-    scrollDelta: {x: 0, y: 0}
-    useDragThreshold: 0
-    dragging: 0
-    button: 0
-    pressure: 0
-    tangentialPressure: 0
-    altitudeAngle: 0
-    azimuthAngle: 0
-    twist: 0
-    tilt: {x: 0, y: 0}
-    penStatus: 0
-    radius: {x: 0, y: 0}
-    radiusVariance: {x: 0, y: 0}
-    fullyExited: 0
-    reentered: 0
   m_uiCanvas: {fileID: 137040918}
-  _pointerHasHIt: 0
-  _centerScreenHasHIt: 0
-  pointerDrag: 0
-  _dragInput: {x: 0, y: 0}
-  _currentDrag: {fileID: 0}
-  _hovered: []
 --- !u!114 &137040916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6935,7 +6898,6 @@ GameObject:
   - component: {fileID: 1523323400}
   - component: {fileID: 1523323399}
   - component: {fileID: 1523323398}
-  - component: {fileID: 1523323401}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -6984,7 +6946,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 10
   m_Viewport: {fileID: 793568246}
   m_HorizontalScrollbar: {fileID: 2135067055}
   m_VerticalScrollbar: {fileID: 1406099653}
@@ -7033,179 +6995,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523323396}
   m_CullTransparentMesh: 1
---- !u!114 &1523323401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523323396}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 13
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 5
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 6
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 14
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 11
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 137040915}
-          m_TargetAssemblyTypeName: ImersiveUiRaycaster, Assembly-CSharp
-          m_MethodName: SetPointerEvent
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &1580168296
 GameObject:
   m_ObjectHideFlags: 0
@@ -8397,44 +8186,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
-  s_pointer:
-    pointerEnter: {fileID: 0}
-    m_PointerPress: {fileID: 0}
-    <lastPress>k__BackingField: {fileID: 0}
-    rawPointerPress: {fileID: 0}
-    pointerDrag: {fileID: 0}
-    pointerClick: {fileID: 0}
-    hovered: []
-    eligibleForClick: 0
-    displayIndex: 0
-    pointerId: 0
-    position: {x: 0, y: 0}
-    delta: {x: 0, y: 0}
-    pressPosition: {x: 0, y: 0}
-    clickTime: 0
-    clickCount: 0
-    scrollDelta: {x: 0, y: 0}
-    useDragThreshold: 0
-    dragging: 0
-    button: 0
-    pressure: 0
-    tangentialPressure: 0
-    altitudeAngle: 0
-    azimuthAngle: 0
-    twist: 0
-    tilt: {x: 0, y: 0}
-    penStatus: 0
-    radius: {x: 0, y: 0}
-    radiusVariance: {x: 0, y: 0}
-    fullyExited: 0
-    reentered: 0
   m_uiCanvas: {fileID: 1927344546}
-  _pointerHasHIt: 0
-  _centerScreenHasHIt: 0
-  pointerDrag: 0
-  _dragInput: {x: 0, y: 0}
-  _currentDrag: {fileID: 0}
-  _hovered: []
 --- !u!114 &1927344549
 MonoBehaviour:
   m_ObjectHideFlags: 0
