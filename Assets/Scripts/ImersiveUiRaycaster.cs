@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 
@@ -38,7 +37,7 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     private PointerEventData pData_pointer;
     private PointerEventData pData_center;
 
-    [SerializeField] SPointerEventData s_pointer;
+    //[SerializeField] SPointerEventData s_pointer;
 
     [SerializeField] Canvas m_uiCanvas;
 
@@ -80,21 +79,12 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         base.OnDestroy();
     }
 
-    //private void Update()
-    //{
-    //    UpdateRaycast(false);
-    //}
 
+    //[SerializeField] 
+    bool _pointerHasHIt;
+    //[SerializeField] 
+    bool _centerScreenHasHIt;
 
-    //[SerializeField] RaycastResultInfos pointerTarget;
-    [SerializeField] bool _pointerHasHIt;
-    //[SerializeField] RaycastResultInfos centerTarget;
-    [SerializeField] bool _centerScreenHasHIt;
-
-    [SerializeField] bool pointerDrag;
-    [SerializeField] Vector2 _dragInput;
-    [SerializeField] GameObject _currentDrag;
-    [SerializeField] List<GameObject> _hovered;
 
 
     private RaycastResult _currentPointerHit = new();
@@ -103,11 +93,11 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     private RaycastResult _currentCenterHit = new();
     private RaycastResult _lastCenterHit = new();
 
-    public void SetPointerEvent(BaseEventData bed)
-    {
-        if (bed is PointerEventData ped)
-            s_pointer = ped;
-    }
+    //public void SetPointerEvent(BaseEventData bed)
+    //{
+    //    if (bed is PointerEventData ped)
+    //        s_pointer = ped;
+    //}
     void UpdateRaycast(bool useCenterScreenPosition = false)
     {
         if (graphicRaycaster == null || !graphicRaycaster.isActiveAndEnabled || !isActiveAndEnabled)
@@ -127,8 +117,6 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         screenPos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         _centerScreenHasHIt = TryGetRayCast(screenPos, ref pData_center);
 
-        //pointerTarget = new(pData_pointer.pointerCurrentRaycast);
-        //centerTarget = new(pData_center.pointerCurrentRaycast);
 
         _currentPointerHit = pData_pointer.pointerCurrentRaycast;
         ProcessLastHitFromCurrent(pData_pointer, ref _currentPointerHit, ref _lastPointerHit);
@@ -138,7 +126,6 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
             ManageScroll(pData_pointer, uiInputModule.scrollWheel.action);
             ProcessCurrentHit(pData_pointer, ref _currentPointerHit);
             ManageClick(pData_pointer, uiInputModule.leftClick.action);
-
             ManageDrag(pData_pointer);
 
             _lastPointerHit = _currentPointerHit;
@@ -148,16 +135,11 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
 
             pData_pointer.pointerCurrentRaycast.Clear();
             _currentPointerHit.Clear();
-            //if (pData_pointer.pointerPress == null)
-            //pData_pointer = new PointerEventData(EventSystem.current);
+
             _lastPointerHit = _currentPointerHit;
         }
 
         //s_pointer = pData_pointer;
-        pointerDrag = pData_pointer.dragging;
-        _dragInput = pData_pointer.delta;
-        _currentDrag = pData_pointer.pointerDrag;
-        _hovered = pData_center.hovered;
 
         if (useCenterScreenPosition)
         {
@@ -168,24 +150,23 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
             {
                 pData_center.position = screenPos;
 
+                ManageScroll(pData_center, uiInputModule.scrollWheel.action);
                 ProcessCurrentHit(pData_center, ref _currentCenterHit);
+                ManageClick(pData_center, uiInputModule.leftClick.action);
 
-
-                //ManageScroll(pData_center,);
+                ManageDrag(pData_center);
 
                 _lastCenterHit = _currentCenterHit;
             }
             else
             {
-                _currentPointerHit.Clear();
-                //if (pData_center.pointerPress == null)
+                _currentCenterHit.Clear();
+
                 pData_center = new PointerEventData(EventSystem.current);
                 _lastCenterHit = _currentCenterHit;
 
             }
         }
-        //if (!_pointerHasHIt && !_centerScreenHasHIt)
-        //    pData = new PointerEventData(EventSystem.current);
     }
 
 
@@ -193,7 +174,6 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
     {
         if (currentHit.gameObject != lastHit.gameObject)
         {
-            //pData.pointerEnter = lastHit.gameObject;
             OnPointerExit(pData);
             lastHit.Clear();
             pData.pointerEnter = currentHit.gameObject;
@@ -202,8 +182,7 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
 
     void ProcessCurrentHit(PointerEventData pData, ref RaycastResult currentHit)
     {
-        //RaycastResult currentHit = pData.pointerCurrentRaycast;
-        s_pointer = pData;
+        //s_pointer = pData;
         if (currentHit.isValid)
         {
 
@@ -230,17 +209,9 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         if (inputAction == null) return;
 
         if (currentHit.gameObject && inputAction.WasPressedThisFrame())
-        {
-            //filling PData 
-            //ped.pointerPressRaycast = currentHit;
-
-            //Debug.Log($"Cloick pressed");
             OnPointerDown(ped);
 
-        }
-
-        if (/*currentHit.gameObject && */inputAction.WasReleasedThisFrame())
-            //if (ped.pointerPress == currentHit.gameObject)
+        if (inputAction.WasReleasedThisFrame())
             OnPointerUp(ped);
     }
 
@@ -273,12 +244,6 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         RaycastResult currentHit = ped.pointerCurrentRaycast;
         GameObject _clickObj = currentHit.gameObject;
 
-        //if (_clickObj.TryGetComponentInParent(out Selectable _selectable))
-        //    _clickObj = _selectable.gameObject;
-        //else if (_clickObj.TryGetComponent(out _selectable))
-        //    _clickObj = _selectable.gameObject;
-
-
         _clickObj = ExecuteEvents.ExecuteHierarchy(
             ped.pointerCurrentRaycast.gameObject,
             ped,
@@ -293,26 +258,41 @@ public class ImersiveUiRaycaster : TrackedDeviceGraphicRaycaster
         }
 
         ped.pointerPress = _clickObj;
+        ped.rawPointerPress = _clickObj;
         ped.pointerClick = _clickObj;
         ped.pointerPressRaycast = ped.pointerCurrentRaycast;
 
-        // Se o objeto suporta drag, inicia estado de drag potencial
+
+        // === initializePotentialDrag: execute up the hierarchy from the exact hit,
+        // so ScrollRect (or any parent) that implements IInitializePotentialDragHandler will receive it
+        ExecuteEvents.ExecuteHierarchy(ped.pointerCurrentRaycast.gameObject, ped, ExecuteEvents.initializePotentialDrag);
+
+        //// Find the object that will actually handle drag events (may be a parent like ScrollRect)
+        //GameObject dragHandler = ExecuteEvents.GetEventHandler<IDragHandler>(ped.pointerCurrentRaycast.gameObject);
+        //ped.pointerDrag = dragHandler;
+
         var newDrag = ExecuteEvents.GetEventHandler<IDragHandler>(_clickObj);
+
+        // se o objeto clicado nao possui drag, procurar um pai que possua (ScrollRect, Scrollbar, etc)
+        //if (newDrag == null)
+        //{
+        //    newDrag = ExecuteEvents.GetEventHandler<IDragHandler>(
+        //        ped.pointerCurrentRaycast.gameObject
+        //    );
+        //}
+
+        ped.pointerDrag = newDrag;
+
         if (newDrag != null)
         {
-            ped.pointerDrag = newDrag;
             ExecuteEvents.Execute(newDrag, ped, ExecuteEvents.initializePotentialDrag);
-        }
-        else
-        {
-            ped.pointerDrag = null;
         }
 
         ped.eligibleForClick = true;
         ped.useDragThreshold = true;
         ped.dragging = false;
 
-        s_pointer = ped;
+        //s_pointer = ped;
     }
 
 
